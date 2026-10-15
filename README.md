@@ -12,33 +12,24 @@ so both flag chains are reachable from one import.
 
 | File | What it is |
 |---|---|
-| `veridian-wasteline-ctf.ova` on [archive.org](https://archive.org/details/veridian-wasteline-ctf) | The full appliance as a **single file** — easiest download |
-| `veridian-wasteline-ctf.ova.0*.part` ([release assets](https://github.com/nabeelmusthafawork/veridian-wasteline-ctf/releases)) here | The same OVA split into 4 parts (GitHub caps release assets at 2 GiB each) — fallback if archive.org is slow or blocked |
+| `veridian-wasteline-ctf.ova.part-*` ([release assets](https://github.com/nabeelmusthafawork/veridian-wasteline-ctf/releases)) | The full appliance, split into 14 parts (13 × 300 MB + 1 × ~106 MB; GitHub caps release assets at 2 GiB each) |
 | `SHA256SUMS` (release asset) | Checksums for every part and for the reassembled OVA |
 | `veridian-wasteline-walkthrough.pdf` | Plain-text, point-by-point intended solution for both layers |
 
-## Download (single file, recommended)
+## Download and reassemble
+
+Download all 15 assets (`SHA256SUMS` + 14 parts) from the
+[latest release](https://github.com/nabeelmusthafawork/veridian-wasteline-ctf/releases),
+then:
 
 ```sh
-wget -O veridian-wasteline-ctf.ova \
-  https://archive.org/download/veridian-wasteline-ctf/veridian-wasteline-ctf.ova
-
+sha256sum -c SHA256SUMS                        # verifies every part
+cat veridian-wasteline-ctf.ova.part-* > veridian-wasteline-ctf.ova
 echo "b86226087fbd8a2052dd56d5b6eb4f653dd1cb8770cdb26ed0262a2998c02faa  veridian-wasteline-ctf.ova" | sha256sum -c
 ```
 
-Browser link: <https://archive.org/download/veridian-wasteline-ctf/veridian-wasteline-ctf.ova>
-
-## Alternative: split parts (GitHub release)
-
-```sh
-# download all 4 parts + SHA256SUMS from the release, then:
-sha256sum -c SHA256SUMS          # verifies the parts
-cat veridian-wasteline-ctf.ova.0*.part > veridian-wasteline-ctf.ova
-echo "b86226087fbd8a2052dd56d5b6eb4f653dd1cb8770cdb26ed0262a2998c02faa  veridian-wasteline-ctf.ova" | sha256sum -c
-```
-
-Either way you end up with the same file: `veridian-wasteline-ctf.ova`,
-4200549376 bytes, sha256 `b8622608…c02faa`.
+The reassembled `veridian-wasteline-ctf.ova` is 4200549376 bytes — the exact
+original file, byte for byte.
 
 ## Import and start
 
@@ -65,10 +56,9 @@ app (reject-all 2FA, `403` on `/storage/*`) is intentional — see the
 
 ## Checksums
 
+The authoritative checksums are in `SHA256SUMS` (release asset). The two that
+matter:
+
 ```
-b86226087fbd8a2052dd56d5b6eb4f653dd1cb8770cdb26ed0262a2998c02faa  veridian-wasteline-ctf.ova  (4200549376 bytes, identical single file or reassembled)
-c3ebfe74774d0225ff2b9cbdea32d48a810bc3e4f59ef95fda646f272a03ccdb  veridian-wasteline-ctf.ova.00.part
-94af3d011c3e9b5573a0448c8fdf772dc41d6d8a7da59978df7332f21c5ff11b  veridian-wasteline-ctf.ova.01.part
-506b9840224ffff2a22ad119ec95c2e5576d98ac57e8fa29790eca17c152189c  veridian-wasteline-ctf.ova.02.part
-3e7306b6d11cb1706aa72964d5dabc8d2d083d9578478d7b9029bef3469e93e0  veridian-wasteline-ctf.ova.03.part
+b86226087fbd8a2052dd56d5b6eb4f653dd1cb8770cdb26ed0262a2998c02faa  veridian-wasteline-ctf.ova  (reassembled, 4200549376 bytes)
 ```
