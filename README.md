@@ -16,17 +16,27 @@ so both flag chains are reachable from one import.
 | `SHA256SUMS` (release asset) | Checksums for every part and for the reassembled OVA |
 | `veridian-wasteline-walkthrough.pdf` | Plain-text, point-by-point intended solution for both layers |
 
-## Download and reassemble
+## Download and reassemble (Linux, one command)
 
-Download all 15 assets (`SHA256SUMS` + 14 parts) from the
-[latest release](https://github.com/nabeelmusthafawork/veridian-wasteline-ctf/releases),
-then:
+Everything below in a single copy-paste block: grabs the walkthrough PDF from
+the repo, downloads all 15 release assets with `wget -c` (resumes if your
+connection drops), verifies every part, glues them into the OVA, verifies the
+final file, then removes the parts so only the OVA + PDF remain:
 
 ```sh
-sha256sum -c SHA256SUMS                        # verifies every part
-cat veridian-wasteline-ctf.ova.part-* > veridian-wasteline-ctf.ova
-echo "b86226087fbd8a2052dd56d5b6eb4f653dd1cb8770cdb26ed0262a2998c02faa  veridian-wasteline-ctf.ova" | sha256sum -c
+mkdir -p wasteline-ctf && cd wasteline-ctf && \
+B=https://github.com/nabeelmusthafawork/veridian-wasteline-ctf/releases/download/v1.0 && \
+wget -c https://raw.githubusercontent.com/nabeelmusthafawork/veridian-wasteline-ctf/main/veridian-wasteline-walkthrough.pdf && \
+wget -c $B/SHA256SUMS && \
+for i in 00 01 02 03 04 05 06 07 08 09 10 11 12 13; do wget -c $B/veridian-wasteline-ctf.ova.part-$i.part; done && \
+sha256sum -c SHA256SUMS && \
+cat veridian-wasteline-ctf.ova.part-* > veridian-wasteline-ctf.ova && \
+echo "b86226087fbd8a2052dd56d5b6eb4f653dd1cb8770cdb26ed0262a2998c02faa  veridian-wasteline-ctf.ova" | sha256sum -c && \
+rm veridian-wasteline-ctf.ova.part-* && ls -lh && echo "DONE — import the .ova into VirtualBox"
 ```
+
+Note: a plain `git clone` does **not** include the OVA — the parts are release
+assets, not repo files. The block above (or the release page) is the way in.
 
 The reassembled `veridian-wasteline-ctf.ova` is 4200549376 bytes — the exact
 original file, byte for byte.
