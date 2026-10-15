@@ -2,7 +2,7 @@
 
 A self-contained, two-layer capture-the-flag lab shipped as a single VirtualBox
 appliance. Layer 2 (a second VM) runs **nested inside** Layer 1 as a QEMU guest,
-so both flags chains are reachable from one import.
+so both flag chains are reachable from one import.
 
 - **Layer 1** — *Veridian Operations Portal* (`http://192.168.56.102`)
 - **Layer 2** — *WasteCo Owner Panel* (`http://192.168.56.50`), nested QEMU VM
@@ -12,11 +12,23 @@ so both flags chains are reachable from one import.
 
 | File | What it is |
 |---|---|
-| `veridian-wasteline-ctf.ova.0*.part` (release assets) | The full appliance, split into 4 parts (GitHub release assets are capped at 2 GiB each) |
+| `veridian-wasteline-ctf.ova` on [archive.org](https://archive.org/details/veridian-wasteline-ctf) | The full appliance as a **single file** — easiest download |
+| `veridian-wasteline-ctf.ova.0*.part` ([release assets](https://github.com/nabeelmusthafawork/veridian-wasteline-ctf/releases)) here | The same OVA split into 4 parts (GitHub caps release assets at 2 GiB each) — fallback if archive.org is slow or blocked |
 | `SHA256SUMS` (release asset) | Checksums for every part and for the reassembled OVA |
 | `veridian-wasteline-walkthrough.pdf` | Plain-text, point-by-point intended solution for both layers |
 
-## Reassemble and import the OVA
+## Download (single file, recommended)
+
+```sh
+wget -O veridian-wasteline-ctf.ova \
+  https://archive.org/download/veridian-wasteline-ctf/veridian-wasteline-ctf.ova
+
+echo "b86226087fbd8a2052dd56d5b6eb4f653dd1cb8770cdb26ed0262a2998c02faa  veridian-wasteline-ctf.ova" | sha256sum -c
+```
+
+Browser link: <https://archive.org/download/veridian-wasteline-ctf/veridian-wasteline-ctf.ova>
+
+## Alternative: split parts (GitHub release)
 
 ```sh
 # download all 4 parts + SHA256SUMS from the release, then:
@@ -25,17 +37,18 @@ cat veridian-wasteline-ctf.ova.0*.part > veridian-wasteline-ctf.ova
 echo "b86226087fbd8a2052dd56d5b6eb4f653dd1cb8770cdb26ed0262a2998c02faa  veridian-wasteline-ctf.ova" | sha256sum -c
 ```
 
-Import with `File → Import Appliance` in VirtualBox, then boot the VM
-(`CTF-Debian13`).
+Either way you end up with the same file: `veridian-wasteline-ctf.ova`,
+4200549376 bytes, sha256 `b8622608…c02faa`.
 
-## Starting the lab
+## Import and start
 
-1. Log in on the console as **`ctf` / `ctf`**.
-2. Layer 1 is already up: `http://192.168.56.102`.
-3. Start the nested Layer 2 VM: `sudo /root/launch`
+1. VirtualBox → `File → Import Appliance` → select the OVA → boot `CTF-Debian13`.
+2. Log in on the console as **`ctf` / `ctf`**.
+3. Layer 1 is already up: `http://192.168.56.102`.
+4. Start the nested Layer 2 VM: `sudo /root/launch`
    (TCG emulation — allow 40–120 s before `http://192.168.56.50` answers).
    `sudo /root/launch stop` stops only the inner VM; Layer 1 stays up.
-4. The host must be on the VirtualBox host-only network (`192.168.56.0/24`) —
+5. The host must be on the VirtualBox host-only network (`192.168.56.0/24`) —
    the inner VM has **no port forwarding** and is reachable only from there.
 
 ## Solving
@@ -53,7 +66,7 @@ app (reject-all 2FA, `403` on `/storage/*`) is intentional — see the
 ## Checksums
 
 ```
-b86226087fbd8a2052dd56d5b6eb4f653dd1cb8770cdb26ed0262a2998c02faa  veridian-wasteline-ctf.ova  (reassembled, 4200549376 bytes)
+b86226087fbd8a2052dd56d5b6eb4f653dd1cb8770cdb26ed0262a2998c02faa  veridian-wasteline-ctf.ova  (4200549376 bytes, identical single file or reassembled)
 c3ebfe74774d0225ff2b9cbdea32d48a810bc3e4f59ef95fda646f272a03ccdb  veridian-wasteline-ctf.ova.00.part
 94af3d011c3e9b5573a0448c8fdf772dc41d6d8a7da59978df7332f21c5ff11b  veridian-wasteline-ctf.ova.01.part
 506b9840224ffff2a22ad119ec95c2e5576d98ac57e8fa29790eca17c152189c  veridian-wasteline-ctf.ova.02.part
